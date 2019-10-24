@@ -1,0 +1,24 @@
+<apex:component id="WarningMessage">
+	<apex:attribute name="message" description="This is the value for the component." type="String"
+					required="true"/>
+	<apex:attribute name="rendered" description="This is the value switch on/off component." type="Boolean"
+					required="false" default="true"/>
+	<apex:outputPanel layout="block" rendered="{!rendered}">
+		<div class="message warningM3">
+			<table class="messageTable" style="padding:0px;margin:0px;" cellspacing="0" cellpadding="0" border="0">
+				<tbody>
+				<tr valign="top">
+					<td>
+						<img alt="WARNING" class="msgIcon" src="/s.gif" title="WARNING"/>
+					</td>
+					<td class="messageCell">
+						<div class="messageText" style="font-size: 13px">
+							<span><h4>Warning:</h4></span>{!message}
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</apex:outputPanel>
+</apex:component>

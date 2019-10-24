@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>BillingAccountZuoraSearchExt</members>
+        <members>BillingAccountZuoraSearchExtTest</members>
+        <members>EditContactsZuoraController</members>
+        <members>EditContactsZuoraControllerTest</members>
+        <members>SearchContactZuoraPopupController</members>
+        <members>SearchContactZuoraPopupControllerTest</members>
+	    <members>ZuoraAccount</members>
+        <members>ZuoraContact</members>
+        <members>ZuoraContactTest</members>
+	    <members>ZuoraResponse</members>
+	    <members>ZuoraResponseException</members>
+	    <members>ZuoraTokenResponse</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>ContactZuoraComponent</members>
+        <members>LoadingComponent</members>
+	    <members>WarningMessage</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>BillingAccZuoraSearch</members>
+        <members>EditContactsZuora</members>
+        <members>SearchContactZuoraPopup</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>VJQuery</members>
+        <name>StaticResource</name>
+    </types>
+    <version>45.0</version>
+</Package>

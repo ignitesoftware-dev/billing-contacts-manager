@@ -1,0 +1,120 @@
+<apex:page id="SearchContactZuoraPopup" controller="SearchContactZuoraPopupController" showHeader="false" showChat="false">
+	<apex:form>
+		<apex:actionFunction name="search" reRender="searchResult,messages" action="{!search}" status="status" onComplete="refreshTable();"/>
+		<style>
+			.diff{
+				background-color: salmon !important;
+			}
+		</style>
+		<apex:includeScript value="{! $Resource.VJQuery }"/>
+		<script type="text/javascript">
+			function setContact(id) {
+				window.opener.newContact(id);
+				window.close();
+			}
+
+			function onSearchKeyPress(ev) {
+				if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+					search();
+					return false;
+				}else{
+					return true;
+				}
+			}
+
+			(function($) {
+				var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+
+				$.fn.attrchange = function(callback) {
+					if (MutationObserver) {
+						var options = {
+							subtree: false,
+							attributes: true
+						};
+
+						var observer = new MutationObserver(function(mutations) {
+							mutations.forEach(function(mutation) {
+								callback.call(mutation.target, mutation.attributeName);
+							});
+						});
+
+						return this.each(function() {
+							observer.observe(this, options);
+						});
+					}
+				}
+			})(jQuery);
+
+			// refresh contacts table
+			function refreshTable() {
+				$("tr[class*='dataRow']").attrchange(function(attrName) {
+					if (attrName === 'class') {
+						highlightDiffs();
+					}
+				});
+			}
+
+			// highlight differences in table
+			function highlightDiffs() {
+				var table = document.querySelector("table[id$='contactsTable']");
+				// find selected row & remove all diff style classes
+				var selectedRow;
+				var selectedRowIndex;
+				for (var i = 0, row; row = table.rows[i]; i++) {
+					if (row && row.className && row.className.includes("highlight")) {
+						selectedRow = row;
+						selectedRowIndex = i;
+					}
+					for (var j = 1, col; col = row.cells[j]; j++) {
+						col.classList.remove("diff");
+					}
+				}
+
+				// iterate over cells and add diff style class to found differences
+				if (selectedRow) {
+					for (var i = 1, row; row = table.rows[i]; i++) {
+						if (i === selectedRowIndex) {
+							continue;
+						}
+
+						for (var j = 1, col; col = row.cells[j]; j++) {
+							if (col.textContent !== selectedRow.cells[j].textContent) {
+								col.className += " diff";
+							}
+						}
+					}
+				}
+			}
+		</script>
+
+		<c:LoadingComponent />
+		<apex:pageMessages id="messages"/>
+		<apex:pageBlock>
+			<apex:outputLabel value="Search Billing Account Contacts:"/>
+			<br/>
+			<apex:inputText value="{!searchText}" size="60" onKeyPress="return onSearchKeyPress(event);"/>
+			<apex:commandButton onClick="search();" value="Search" onComplete="return null;"/>
+			<apex:pageBlockSection id="searchResult">
+				<apex:pageBlockTable value="{!searchResult}" var="item" id="contactsTable">
+					<apex:column headerValue="Select" style="width: 40px;">
+						<apex:commandButton value="Select" onClick="setContact('{!item.Id}');" onComplete="return null;"/>
+					</apex:column>
+					<apex:column value="{!item.FirstName}" headerValue="First Name"/>
+					<apex:column value="{!item.LastName}" headerValue="Last Name"/>
+					<apex:column value="{!item.Email}" headerValue="Work Email"/>
+					<apex:column value="{!item.Phone}" headerValue="Work Phone"/>
+					<apex:column value="{!item.MobilePhone}" headerValue="Mobile Phone"/>
+					<apex:column value="{!item.HomePhone}" headerValue="Home Phone"/>
+					<apex:column value="{!item.OtherPhone}" headerValue="Other Phone"/>
+					<apex:column value="{!item.Fax}" headerValue="Fax"/>
+					<apex:column value="{!item.MailingCountry}" headerValue="Country"/>
+					<apex:column value="{!item.MailingStreet}" headerValue="Street"/>
+					<apex:column value="{!item.MailingCity}" headerValue="City"/>
+					<apex:column value="{!item.MailingState}" headerValue="State"/>
+					<apex:column value="{!item.MailingPostalCode}" headerValue="Postal Code"/>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+	<script>refreshTable();</script>
+</apex:page>

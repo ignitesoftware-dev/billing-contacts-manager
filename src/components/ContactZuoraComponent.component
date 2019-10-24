@@ -1,0 +1,53 @@
+<apex:component id="ContactZuoraComponent">
+	<apex:attribute name="contactZuora" description="This is the value for the component." type="ZuoraContact"
+					required="true"/>
+	<apex:attribute name="disableForm" description="This is the value for enable/disable form" type="Boolean"
+					required="false" default="false"/>
+
+	<apex:pageBlockSection columns="1" >
+		<apex:outputText value="{!contactZuora.Id}" label="Contact Id" />
+		<apex:outputText value="{!contactZuora.AccountId}" label="Account Id" />
+
+		<apex:outputText value="Editing" label="Mode" rendered="{!contactZuora.Id != null}"/>
+		<apex:outputText value="Creating new" label="Mode" rendered="{!contactZuora.Id == null}"/>
+
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="First name"/>
+			<apex:outputPanel styleClass="requiredInput" layout="block">
+				<apex:outputPanel styleClass="requiredBlock" layout="block"/>
+				<apex:inputText value="{!contactZuora.FirstName}" required="false" maxLength="100" title="First Name" id="FirstName" disabled="{!disableForm}"/>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+
+		<apex:pageBlockSectionItem >
+			<apex:outputLabel value="Last name" />
+			<apex:outputPanel styleClass="requiredInput" layout="block">
+				<apex:outputPanel styleClass="requiredBlock" layout="block" />
+				<apex:inputText value="{!contactZuora.LastName}" label="Last name" maxLength="100" required="false" id="LastName" disabled="{!disableForm}"/>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+
+		<apex:inputText value="{!contactZuora.NickName}" label="Nick name" maxLength="100" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.Address1}" label="The first line of address" maxLength="255" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.Address2}" label="The second line of address" maxLength="255" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.PostalCode}" label="Postal code" maxLength="20" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.City}" label="City" maxLength="40" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.State}" label="State" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.Country}" label="Country" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.PersonalEmail}" label="Personal email" maxLength="80" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.WorkEmail}" label="Work email" maxLength="80" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.Fax}" label="Fax" maxLength="40" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.HomePhone}" label="Home phone" maxLength="40" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.WorkPhone}" label="Work phone" maxLength="40" disabled="{!disableForm}"/>
+		<apex:inputText value="{!contactZuora.MobilePhone}" label="Mobile phone" maxLength="40" disabled="{!disableForm}"/>
+		<apex:pageBlockSectionItem labelTitle="Other phone">
+			<apex:outputLabel value="Other Phone"/>
+			<apex:outputPanel layout="block">
+				<apex:inputText value="{!contactZuora.OtherPhone}" label="Other phone" maxLength="40" style="margin-right: 8px" disabled="{!disableForm}"/>
+				<apex:selectList value="{!contactZuora.OtherPhoneType}" size="1" multiselect="false" disabled="{!disableForm}">
+					<apex:selectOptions value="{!contactZuora.phoneTypes}"/>
+				</apex:selectList>
+			</apex:outputPanel>
+		</apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+</apex:component>

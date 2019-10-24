@@ -1,0 +1,150 @@
+<!--
+ - Created by Jakub Wilkosz on 25/03/2019.
+ -->
+
+<apex:page id="BillingAccZuoraSearch" standardController="Zuora__CustomerAccount__c" recordSetVar="bAccs" extensions="BillingAccountZuoraSearchExt">
+
+	<script>
+		let accSearchPhraseSize = 0;
+		let scheduled = [];
+		let currentInput;
+
+		function scheduleRetrieval(){
+			if (scheduled.length > 1){
+				scheduled.shift();
+			} else if (scheduled.length === 1){
+				scheduled.pop()();
+			}
+		}
+
+		function accountSearchKeyPress(input) {
+			if (input.value.length > 2) {
+				currentInput = input.value;
+				accSearchPhraseSize = input.value.length;
+				scheduled.push(loadSearchAF);
+				window.setTimeout(scheduleRetrieval, 1500);
+			} else if (accSearchPhraseSize > 2) {
+				currentInput = input.value;
+				accSearchPhraseSize = input.value.length;
+				scheduled.push(loadRecentAF);
+				window.setTimeout(scheduleRetrieval, 1500);
+			}
+		}
+
+		function focusOnEnd(elem){
+			setTimeout(function(){ elem.selectionStart = elem.selectionEnd = 10000; }, 0);
+		}
+
+		function openInNewWindowById(id) {
+			window.open('{!JSENCODE(LEFT($Api.Partner_Server_URL_340, FIND( '/services', $Api.Partner_Server_URL_340)))}' + id, '_blank');
+		}
+
+		function openEditPageById(id) {
+			window.open('{!JSENCODE(LEFT($Api.Partner_Server_URL_340, FIND( '/services', $Api.Partner_Server_URL_340)))}' + 'apex/EditContactsZuora?id=' + id, '_blank');
+		}
+
+		function noenter(ev) {
+			if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+				loadSearchAF();
+				return false;
+			} else {
+				return true;
+			}
+		}
+	</script>
+	<style>
+		.mousePointer {
+			cursor: pointer;
+		}
+
+		/*advanced search*/
+
+		input#show, input#hide {
+			display:none;
+		}
+
+		span#content {
+			display: block;
+			-webkit-transition: opacity 1s ease-out;
+			transition: opacity 1s ease-out;
+			opacity: 0;
+			height: 0;
+			font-size: 0;
+			overflow: hidden;
+		}
+
+		input#show:checked ~ .show:before {
+			content: ""
+		}
+		input#show:checked ~ .hide:before {
+			content: "Hide"
+		}
+
+		input#hide:checked ~ .hide:before {
+			content: ""
+		}
+		input#hide:checked ~ .show:before {
+			content: "Advanced Search";
+			background-image: chevronright;
+		}
+		input#show:checked ~ span#content {
+			opacity: 1;
+			font-size: 100%;
+			height: auto;
+		}
+		input#hide:checked ~ span#content {
+			display: block;
+			-webkit-transition: opacity 1s ease-out;
+			transition: opacity 1s ease-out;
+			opacity: 0;
+			height: 0;
+			font-size: 0;
+			overflow: hidden;
+		}
+	</style>
+	<c:LoadingComponent/>
+	<apex:pageBlock title="Billing Accounts Page" id="reconPB">
+		<apex:form id="reconForm">
+			<apex:actionRegion >
+				<apex:actionFunction name="loadRecentAF" action="{!loadRecent}"
+									 status="status"
+									 reRender="searchSection,paginationSection"/>
+				<apex:actionFunction name="loadSearchAF" action="{!loadSearch}"
+									 status="status"
+									 reRender="searchSection,paginationSection"/>
+				<apex:outputLabel value="Search Billing Accounts by: Name, Number"/>
+				<br/>
+				<apex:inputText value="{!searchText}" size="60" id="searchForm"
+								onKeyUp="accountSearchKeyPress(this);"
+								onChange="accountSearchKeyPress(this);"
+								onFocus="focusOnEnd(this)"
+								onKeyPress="return noenter(event);"
+				/>
+			</apex:actionRegion>
+
+			<apex:pageBlockSection id="searchSection" columns="1">
+				<apex:pageBlockTable value="{!customerAccounts}" var="res">
+					<apex:column headerValue="Edit" style="width: 40px;">
+						<apex:commandButton styleClass="autocomplete-btn"
+											onClick="openEditPageById('{!res.Id}')"
+											onComplete="return null;"
+											value="Edit"/>
+					</apex:column>
+					<apex:column value="{!res.Name}" headerValue="Billing Account Name"/>
+					<apex:column value="{!res.Zuora__AccountNumber__c}" headerValue="Account Number"/>
+					<apex:column value="{!res.Id}" headerValue="Billing Account Id"/>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection id="paginationSection" >
+				<apex:panelGrid columns="3">
+					<apex:commandLink action="{!ctrl.previous}" rendered="{!ctrl.hasPrevious}">Previous</apex:commandlink>
+					<apex:outputText value="{!ctrl.pageNumber}/{!pages}"/>
+					<apex:commandLink action="{!ctrl.next}" rendered="{!ctrl.hasNext}">Next</apex:commandlink>
+				</apex:panelGrid>
+			</apex:pageBlockSection>
+
+		</apex:form>
+	</apex:pageBlock>
+
+</apex:page>

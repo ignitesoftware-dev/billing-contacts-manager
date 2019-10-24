@@ -1,0 +1,73 @@
+<apex:page id="EditContactsZuora" controller="EditContactsZuoraController">
+	<apex:form id="mainForm">
+		<apex:actionFunction name="setSoldContact" action="{!changeSoldToContact}" reRender="mainForm" status="status">
+			<apex:param name="param1" assignTo="{!idToFind}" value=""/>
+		</apex:actionFunction>
+		<apex:actionFunction name="setBillContact" action="{!changeBillToContact}" reRender="mainForm" status="status">
+			<apex:param name="param1" assignTo="{!idToFind}" value=""/>
+		</apex:actionFunction>
+		<script type="text/javascript">
+			var windowFor;
+
+			function openContactSearch(contactTarget) {
+				windowFor = contactTarget;
+				let h = 600;
+				let w = 1200;
+				let top = (screen.height / 2) - (h / 2);
+				let left = (screen.width / 2) - (w / 2);
+				let url = '/apex/SearchContactZuoraPopup?AccountId={!bAccount.Zuora__Account__c}';
+				return window.open(url, "Search Contact", 'toolbar=no, location=no, directories=no, status=no, menubar=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+			}
+
+			function newContact(contactId) {
+				if (windowFor === 'billTo') {
+					setBillContact(contactId);
+				} else if (windowFor === 'soldTo') {
+					setSoldContact(contactId);
+				}
+			}
+		</script>
+
+		<apex:pageMessages/>
+		<c:LoadingComponent/>
+		<apex:pageBlock
+				title="Edit Billing Account Contacts : {!bAccount.Name}"
+				rendered="{!IF(OR(ISNULL(billToContact), ISNULL(soldToContact)), false, true)}">
+			<apex:tabPanel switchType="client" selectedTab="billTo" id="tabPanel">
+				<apex:tab label="Bill to" name="billTo" id="billTo">
+					<apex:pageBlock>
+
+						<c:WarningMessage message="'Bill to' and 'sold to' are the same contact. By editing 'bill to' you edit 'sold to' as well." rendered="{!soldToContact.Id == billToContact.Id && soldToContact.Id!=null}"/>
+
+						<c:ContactZuoraComponent contactZuora="{!billToContact}"/>
+						<apex:pageBlockButtons location="top">
+							<apex:commandButton value="Replace with existing contact"
+												onClick="openContactSearch('billTo')" onComplete="return null;"/>
+							<apex:commandButton value="Replace with new contact" action="{!newBillTo}"/>
+							<apex:commandButton value="Replace with new contact (copy)" action="{!newBillToWithData}"/>
+						</apex:pageBlockButtons>
+					</apex:pageBlock>
+				</apex:tab>
+				<apex:tab label="Sold to" name="soldTo" id="soldTo">
+					<apex:pageBlock>
+
+						<c:WarningMessage message="'Bill to' and 'sold to' are the same contact. By editing 'bill to' you edit 'sold to' as well." rendered="{!soldToContact.Id == billToContact.Id && soldToContact.Id!=null}"/>
+
+						<c:ContactZuoraComponent contactZuora="{!soldToContact}"
+												 disableForm="{!soldToContact.Id == billToContact.Id && soldToContact.Id!=null}"/>
+						<apex:pageBlockButtons location="top">
+							<apex:commandButton value="Replace with existing contact"
+												onClick="openContactSearch('soldTo')" onComplete="return null;" disabled="{!soldToContact.Id == billToContact.Id && soldToContact.Id!=null}"/>
+							<apex:commandButton value="Replace with new contact" action="{!newSoldTo}"/>
+							<apex:commandButton value="Replace with new contact (copy)" action="{!newSoldToWithData}"/>
+						</apex:pageBlockButtons>
+					</apex:pageBlock>
+				</apex:tab>
+			</apex:tabPanel>
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Save to Zuora" action="{!saveToZuora}"
+									rendered="{!IF(OR(ISNULL(billToContact), ISNULL(soldToContact)), false, true)}"/>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>
