@@ -13,12 +13,12 @@ public with sharing class BillingAccountZuoraSearchExt {
     }
 
     public PageReference loadRecent() {
-        this.ctrl = new ApexPages.StandardSetController(Database.getQueryLocator('SELECT Id, Name, Zuora__AccountNumber__c FROM Zuora__CustomerAccount__c ORDER BY CreatedDate DESC LIMIT 50'));
+        this.ctrl = new ApexPages.StandardSetController(Database.getQueryLocator('SELECT Id, Name, Zuora__AccountNumber__c FROM Zuora__CustomerAccount__c ORDER BY CreatedDate DESC LIMIT 1000'));
         return null;
     }
 
     public PageReference loadSearch() {
-        this.ctrl = new ApexPages.StandardSetController(Database.getQueryLocator('SELECT Id, Name, Zuora__AccountNumber__c FROM Zuora__CustomerAccount__c WHERE Name LIKE \'%' + searchText + '%\' OR Zuora__AccountNumber__c LIKE \'%' + searchText + '%\' ORDER BY Name LIMIT 50'));
+        this.ctrl = new ApexPages.StandardSetController(Database.getQueryLocator('SELECT Id, Name, Zuora__AccountNumber__c FROM Zuora__CustomerAccount__c WHERE Name LIKE \'%' + searchText + '%\' OR Zuora__AccountNumber__c LIKE \'%' + searchText + '%\' ORDER BY Name LIMIT 1000'));
         return null;
     }
 
