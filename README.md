@@ -21,3 +21,20 @@ otherwise use this one: <a href="https://test.salesforce.com/packaging/installPa
 6. Validation - if the Zuora returns an error on updating contacts (no connection, wrong or missing data) there is a message shown to the user at the top of the page. Moreover, if the operation is successful, there is also a message saying the changes has been made.
 7. Upon update, the changes are synced to Zuora directly.
 8. After Zuora is updated, a Z360 sync is triggered to make sure that the updated contact information makes its way from Zuora back to Salesforce so that the data in both applications is aligned
+
+![App Menu](screenshots/img0.png?raw=true "App Menu")
+
+You can easily search for a billing account by name or number with a new custom search page
+![Search](screenshots/img1.png?raw=true "Search")
+
+And partial search is automated for quick results: 
+![Search Results](screenshots/img2.png?raw=true "Search Results")
+
+The app ensures the bill to and sold to data is synced from Zuora so you are looking at the most current data. And there is a tab for bill to and a tab for sold to contacts:
+![Sync](screenshots/img3.png?raw=true "Sync")
+
+You can edit existing details or choose a Salesforce contact to update bill to and sold to contact data in Zuora:
+![Edit](screenshots/img4.png?raw=true "Edit")
+
+Real time confirmation is provided for peace of mind knowing the updates have been made in Zuora and Salesforce:
+![Confirmation](screenshots/img5.png?raw=true "Confirmation")
